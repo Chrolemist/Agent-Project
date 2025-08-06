@@ -1,0 +1,22 @@
+# CrewAI News Production System Requirements
+
+# Core AI framework
+crewai==0.152.0
+
+# Google AI
+google-generativeai==0.8.3
+
+# Web framework
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9
+
+# Environment and configuration
+python-dotenv==1.0.1
+
+# Data handling
+pydantic==2.11.7
+
+# Development tools
+pytest==8.3.4
+pytest-asyncio==0.25.0
