@@ -1,17 +1,153 @@
-research_task:
+initial_model_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
+    FIRST: Establish realistic performance targets based on actual data, then implement ML solution.
+    
+    Task objective: Predict the next row of 7nr.csv dataset (7 numerical columns).
+    
+    CRITICAL FIRST STEP - Target Calculation:
+    1. Load 7nr.csv and take the last 10 rows as test data
+    2. For each value in those 10 rows, create "ideal predictions" that are 1-2 integers away
+    3. Calculate the RMSE between actual values and these "ideal" predictions
+    4. Use this RMSE as your realistic target (instead of arbitrary RMSE < 5.0)
+    5. Set R² target to > 0.95 for high accuracy
+    
+    Your approach after target setting:
+    1. Analyze the prediction problem with realistic targets
+    2. Propose algorithms (XGBoost, LightGBM, Optuna for hyperparameter tuning)
+    3. List required packages
+    4. Create the implementation
+    
+    Start your response with a comment block:
+    # REALISTIC TARGET CALCULATION: Taking last 10 rows, creating 1-2 integer offset predictions
+    # This gives us RMSE target of [calculated_value] which is achievable for near-exact predictions
+    # PLAN: I will use [algorithms] requiring packages [list]
+    
+    Then implement the full solution with:
+    - Realistic target calculation as described above
+    - Data loading and preprocessing  
+    - Model training with the chosen algorithms
+    - Hyperparameter optimization
+    - Cross-validation evaluation
+    - Performance reporting against the realistic targets
+    
+    Write only executable Python code. No markdown formatting.
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+    Complete ML solution with realistic target calculation and implementation
+  agent: ml_engineer
 
-reporting_task:
+dependency_check_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Review the ML engineer's plan and ensure all required packages are installed.
+    
+    CRITICAL: Write ONLY executable Python code. NO markdown formatting whatsoever.
+    DO NOT use ```python or ``` anywhere in your response.
+    Start directly with Python import statements.
+    
+    Based on the ML engineer's plan, your job:
+    
+    1. Analyze the proposed approach and identify required packages
+    2. Check if packages are already installed using Python import tests
+    3. Install any missing packages using subprocess.run(['pip', 'install', 'package'])
+    4. Create a brief status report confirming what's ready
+    
+    Write a Python script that handles the installation and reports back.
+    Focus only on packages that the ML engineer actually plans to use.
+    
+    Do NOT install unnecessary packages - only what's needed for the current plan.
+    
+    Your response must start with: import subprocess
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    Pure Python script (no markdown) that installs required packages and confirms availability
+  agent: dependency_manager
+
+performance_analysis_task:
+  description: >
+    Analyze the current model performance against the REALISTIC targets calculated from actual data.
+    
+    The targets were calculated by taking the last 10 rows and seeing what RMSE would be needed 
+    to get within 1-2 integers of actual values. This is the real benchmark for "good" predictions.
+    
+    Check if the current model meets the realistic criteria calculated from the data.
+    
+    If realistic target is achieved:
+    - Report SUCCESS and recommend stopping iterations
+    - Summarize what worked well
+    - Explain how close the predictions are to actual values (in whole numbers)
+    
+    If realistic target is NOT achieved:
+    - Identify specific performance gaps against the realistic benchmark
+    - Recommend concrete improvements for next iteration:
+      * Algorithm changes (try CatBoost, Neural Networks, etc.)
+      * Hyperparameter tuning suggestions  
+      * Feature engineering improvements
+      * Data preprocessing enhancements
+    
+    Always end with: "CONTINUE_ITERATION: [YES/NO]" based on whether realistic target is met.
+  expected_output: >
+    Performance analysis with realistic target comparison and CONTINUE_ITERATION decision
+  agent: data_analyst
+
+model_improvement_task:
+  description: >
+    YOU MUST WRITE ONLY EXECUTABLE PYTHON CODE. NO DESCRIPTIONS. NO EXPLANATIONS.
+    
+    Create an advanced machine learning model that achieves REALISTIC near-exact predictions.
+    The goal is to predict values within 1-2 integers of actual values consistently.
+    
+    Use the realistic RMSE target calculated from the last 10 rows analysis.
+    
+    CRITICAL RULES:
+    - Write ONLY Python code that can run directly 
+    - NO markdown formatting ever (no ```, no ````python)
+    - NO explanatory text - only Python comments with #
+    - Focus on achieving the realistic RMSE target calculated earlier
+    - Target: Near-exact predictions (within 1-2 integers of actual values)
+    
+    REQUIRED TECHNIQUES TO IMPLEMENT:
+    1. Advanced algorithms (XGBoost/LightGBM/CatBoost)
+    2. Hyperparameter optimization (Optuna/GridSearchCV)
+    3. Feature engineering (polynomial features, scaling)
+    4. Cross-validation with realistic target
+    5. Multi-output regression handling if needed
+    6. Focus on achieving the calculated realistic RMSE benchmark
+    
+    Write complete, working Python script that executes without errors.
+  expected_output: >
+    Complete Python script (.py) with advanced ML model achieving realistic near-exact performance.
+    Must be syntactically perfect and executable.
+  agent: ml_engineer
+
+final_results_task:
+  description: >
+    Create a comprehensive markdown report with the team's findings and realistic prediction analysis.
+    
+    Your task:
+    1. Summarize what the team accomplished (algorithms used, realistic performance achieved)
+    2. Present the final "next row" prediction as whole numbers (round all values)
+    3. Show how close predictions were to the realistic target (1-2 integers accuracy)
+    4. Generate 10 additional prediction variants with slight model variations or confidence intervals
+    5. For each of the 10 variants, show how many values are within 1-2 integers of potential real values
+    
+    Structure your report as:
+    # Final Team Results - Realistic Prediction Analysis
+    
+    ## Summary of Work
+    [What algorithms were used, what realistic performance was achieved vs the calculated target]
+    
+    ## Primary Prediction (Next Row)
+    [7 numbers rounded to whole numbers]
+    
+    ## Accuracy Analysis
+    [How close we got to the realistic RMSE target, what this means in terms of integer accuracy]
+    
+    ## Bonus: 10 Alternative Predictions
+    [10 variations of the prediction, all as whole numbers]
+    [For each variant, note potential accuracy within 1-2 integers]
+    
+    ## Technical Details
+    [Brief summary of realistic target calculation and final performance metrics]
+    
+    Make this a comprehensive, well-formatted markdown report focused on realistic prediction accuracy.
+  expected_output: >
+    Markdown report with realistic target analysis, primary prediction as whole numbers, and 10 bonus predictions with accuracy assessment
+  agent: data_analyst

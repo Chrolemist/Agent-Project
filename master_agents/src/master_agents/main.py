@@ -15,17 +15,34 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 def run():
     """
-    Run the crew.
+    Run the crew iteratively until target performance is achieved.
     """
     inputs = {
-        'topic': 'AI LLMs',
-        'current_year': str(datetime.now().year)
+        'dataset': '7nr.csv',
+        'target_r2': 0.8,
+        'target_rmse': 5.0
     }
     
-    try:
-        MasterAgents().crew().kickoff(inputs=inputs)
-    except Exception as e:
-        raise Exception(f"An error occurred while running the crew: {e}")
+    max_iterations = 3
+    
+    for iteration in range(1, max_iterations + 1):
+        print(f"\n🔄 ITERATION {iteration}/{max_iterations}")
+        print("=" * 50)
+        
+        try:
+            result = MasterAgents().crew().kickoff(inputs=inputs)
+            print(f"\n✅ Iteration {iteration} completed")
+            
+            # Check if we should continue based on performance analysis
+            if hasattr(result, 'raw') and "CONTINUE_ITERATION: NO" in str(result.raw):
+                print("🎯 Target achieved! Stopping iterations.")
+                break
+                
+        except Exception as e:
+            print(f"❌ Iteration {iteration} failed: {e}")
+            continue
+    
+    print("\n🏁 All iterations completed!")
 
 
 def train():
